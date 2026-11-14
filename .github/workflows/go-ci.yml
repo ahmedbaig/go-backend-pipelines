@@ -1,0 +1,55 @@
+name: go-ci
+on:
+  workflow_call:
+    inputs:
+      go-version-file:
+        type: string
+        default: go.mod
+      working-directory:
+        type: string
+        default: .
+      race:
+        type: boolean
+        default: true
+      lint:
+        type: boolean
+        default: true
+      vulncheck:
+        type: boolean
+        default: true
+      coverage-min:
+        type: number
+        default: 0
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ inputs.working-directory }}/${{ inputs.go-version-file }}
+      - name: gofmt
+        run: |
+          out=$(gofmt -l .)
+          if [ -n "$out" ]; then echo "needs gofmt:"; echo "$out"; exit 1; fi
+      - name: vet
+        run: go vet ./...
+      - name: staticcheck
+        if: inputs.lint
+        run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+      - name: test
+        run: go test ${{ inputs.race && '-race' || '' }} -coverprofile=coverage.out -covermode=atomic ./...
+      - name: coverage
+        run: |
+          total=$(go tool cover -func=coverage.out | awk '/^total:/ {sub("%","",$3); print $3}')
+          echo "total coverage: ${total}%"
+          echo "### Coverage: ${total}%" >> "$GITHUB_STEP_SUMMARY"
+          awk -v t="$total" -v m="${{ inputs.coverage-min }}" 'BEGIN { exit (t+0 < m+0) }' || { echo "below ${{ inputs.coverage-min }}%"; exit 1; }
+      - name: govulncheck
+        if: inputs.vulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
