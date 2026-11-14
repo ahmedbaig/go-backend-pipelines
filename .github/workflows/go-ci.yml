@@ -2,9 +2,9 @@ name: go-ci
 on:
   workflow_call:
     inputs:
-      go-version-file:
+      go-version:
         type: string
-        default: go.mod
+        default: stable
       working-directory:
         type: string
         default: .
@@ -32,7 +32,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: ${{ inputs.working-directory }}/${{ inputs.go-version-file }}
+          go-version: ${{ inputs.go-version }}
+          check-latest: true
       - name: gofmt
         run: |
           out=$(gofmt -l .)

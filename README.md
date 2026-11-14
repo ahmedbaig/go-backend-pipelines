@@ -39,7 +39,7 @@ jobs:
 
 | Workflow | Does | Inputs |
 |---|---|---|
-| `go-ci.yml` | gofmt check, `go vet`, staticcheck, `go test -race` with coverage (shown in the job summary), govulncheck | `go-version-file`, `working-directory`, `race`, `lint`, `vulncheck`, `coverage-min` |
+| `go-ci.yml` | gofmt check, `go vet`, staticcheck, `go test -race` with coverage (shown in the job summary), govulncheck. Uses the latest patched Go so govulncheck doesn't flag an old toolchain | `go-version` (default `stable`), `working-directory`, `race`, `lint`, `vulncheck`, `coverage-min` |
 | `docker.yml` | multi-arch buildx build, push to GHCR | `image` (default `ghcr.io/<owner>/<repo>`), `dockerfile`, `context`, `platforms`, `push` |
 | `release.yml` | GitHub release with generated notes for a `v*` tag | |
 
