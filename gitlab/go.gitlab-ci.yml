@@ -76,7 +76,7 @@ docker:branch:
   script:
     - VERSION=$(cat VERSION 2>/dev/null || echo 0.0.0)
     - TAG="${CI_COMMIT_REF_SLUG}-${VERSION}"
-    - docker build -f "$DOCKERFILE" --build-arg VERSION="$CI_COMMIT_SHORT_SHA" -t "$DOCKER_IMAGE_NAME:$TAG" -t "$DOCKER_IMAGE_NAME:sha-$CI_COMMIT_SHORT_SHA" .
+    - docker build -f "$DOCKERFILE" -t "$DOCKER_IMAGE_NAME:$TAG" -t "$DOCKER_IMAGE_NAME:sha-$CI_COMMIT_SHORT_SHA" .
     - docker push "$DOCKER_IMAGE_NAME:$TAG"
     - docker push "$DOCKER_IMAGE_NAME:sha-$CI_COMMIT_SHORT_SHA"
   rules:
@@ -87,7 +87,7 @@ docker:release:
   extends: .docker
   stage: release
   script:
-    - docker build -f "$DOCKERFILE" --build-arg VERSION="$CI_COMMIT_TAG" -t "$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG" -t "$DOCKER_IMAGE_NAME:latest" .
+    - docker build -f "$DOCKERFILE" -t "$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG" -t "$DOCKER_IMAGE_NAME:latest" .
     - docker push "$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG"
     - docker push "$DOCKER_IMAGE_NAME:latest"
   rules:

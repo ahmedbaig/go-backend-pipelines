@@ -68,7 +68,7 @@ Variables: `GO_IMAGE`, `DOCKERFILE`, `DOCKER_IMAGE_NAME`, `COVERAGE_MIN`, `DOCKE
 
 ## Dockerfile
 
-`docker/Dockerfile.go`: Go build stage with module and build caches, then Alpine with `tini` as PID 1, non-root `app` user, `CONFIG_DIR=/app/var/secrets`, `TZ` (default `Australia/Sydney`) and a `HEALTHCHECK` on `/healthz`. Build args `CMD` (default `./cmd/server`), `VERSION` (injected as `main.version`), `GO_VERSION`, `TZ`.
+`docker/Dockerfile.go`: Go build stage with module and build caches, then Alpine with `tini` as PID 1, non-root `app` user, `CONFIG_DIR=/app/var/secrets`, `TZ` (default `Australia/Sydney`) and a `HEALTHCHECK` on `/healthz`. Build args `CMD` (default `./cmd/server`), `GO_VERSION`, `TZ`.
 
 ## Makefile targets
 
